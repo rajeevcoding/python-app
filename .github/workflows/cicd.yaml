@@ -49,9 +49,20 @@ jobs:
         uses: EndBug/add-and-commit@v9
         with:
           message: 'Updates values.yaml with commit ${{needs.ci.outputs.commit_id}}'
+      
+      - name: Check for Argo CD CLI
+        id: check_argocd_cli
+        run: |
+          if command -v argocd &> /dev/null; then
+            echo "Argo CD CLI is already installed."
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "Argo CD CLI is not found. Installing..."
+            echo "exists=false" >> $GITHUB_OUTPUT
 
       - name: Install argocd
         shell: bash
+        if: steps.check_argocd_cli.outputs.exists == 'false'
         run: |
           curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
           chmod +x argocd-linux-amd64
