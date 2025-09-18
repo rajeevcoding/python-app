@@ -59,6 +59,7 @@ jobs:
           else
             echo "Argo CD CLI is not found. Installing..."
             echo "exists=false" >> $GITHUB_OUTPUT
+          fi
 
       - name: Install argocd
         shell: bash
